@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using EasySaveConsole;
 using EasySaveConsole.Controllers;
 using EasySaveLogging.Logger;
@@ -18,6 +19,14 @@ namespace EasySaveV1.EasySave.Console
                 DateTime.Today.ToString("yyyy-MM-dd") + ".json"
             );
             logger.SetLogFilePath(logFile);
+
+            // Ensure state file directory exists
+            var stateFilePath = Config.GetStateFilePath();
+            var stateDir = Path.GetDirectoryName(stateFilePath);
+            if (!Directory.Exists(stateDir))
+            {
+                Directory.CreateDirectory(stateDir);
+            }
 
             // Lancer le Controller
             var controller = new BackupController();

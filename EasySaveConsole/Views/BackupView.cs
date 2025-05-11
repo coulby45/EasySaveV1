@@ -24,7 +24,8 @@ namespace EasySaveConsole.Views
                 Console.WriteLine("3. Modifier une sauvegarde");
                 Console.WriteLine("4. Supprimer une sauvegarde");
                 Console.WriteLine("5. Afficher les logs");
-                Console.WriteLine("6. Quitter");
+                Console.WriteLine("6. Exécuter des sauvegardes");
+                Console.WriteLine("7. Quitter");
             }
             else
             {
@@ -34,7 +35,8 @@ namespace EasySaveConsole.Views
                 Console.WriteLine("3. Update backup");
                 Console.WriteLine("4. Delete backup");
                 Console.WriteLine("5. Show logs");
-                Console.WriteLine("6. Exit");
+                Console.WriteLine("6. Execute backups");
+                Console.WriteLine("7. Exit");
             }
             Console.Write("> ");
             return Console.ReadLine();
@@ -89,6 +91,16 @@ namespace EasySaveConsole.Views
             Console.WriteLine(b);
         }
 
+        public string[] AskBackupIndices(string lang)
+        {
+            Console.WriteLine(lang == "fr"
+                ? "Entrez les numéros des sauvegardes à exécuter (ex: 1;2;3 ou 1-3):"
+                : "Enter backup numbers to execute (ex: 1;2;3 or 1-3):");
+            Console.Write("> ");
+            string input = Console.ReadLine();
+            return input?.Split(';') ?? Array.Empty<string>();
+        }
+
         public void ShowMessage(string code, string lang)
         {
             var msg = code switch
@@ -102,6 +114,9 @@ namespace EasySaveConsole.Views
                 "invalid" => lang == "fr"
                     ? "Option invalide."
                     : "Invalid option.",
+                "exec_success" => lang == "fr"
+                    ? "Sauvegardes exécutées avec succès."
+                    : "Backups executed successfully.",
                 _ => ""
             };
             Console.WriteLine(msg);

@@ -15,6 +15,7 @@ namespace EasySaveLogging.Logger
         public long TransferTime { get; set; }
         public string Message { get; set; }
         public string LogType { get; set; }
+        public string ActionType { get; set; } // Nouveau champ pour le type d'action
     }
 
     public class Logger
@@ -61,9 +62,35 @@ namespace EasySaveLogging.Logger
                 FileSize = fileSize,
                 TransferTime = (long)transferTime.TotalMilliseconds,
                 Message = logType == "ERROR" ? "Error during transfer" : "File transferred",
-                LogType = logType
+                LogType = logType,
+                ActionType = "FILE_TRANSFER"
             };
 
+            AddLogEntry(entry);
+        }
+
+        // Nouvelle méthode pour journaliser les opérations administratives
+        public void LogAdminAction(string backupName, string actionType, string message)
+        {
+            var entry = new LogEntry
+            {
+                Timestamp = DateTime.Now,
+                BackupName = backupName ?? "",
+                SourcePath = "",
+                TargetPath = "",
+                FileSize = 0,
+                TransferTime = 0,
+                Message = message,
+                LogType = "INFO",
+                ActionType = actionType
+            };
+
+            AddLogEntry(entry);
+        }
+
+        // Méthode commune pour ajouter une entrée de log
+        private void AddLogEntry(LogEntry entry)
+        {
             lock (_instance)
             {
                 var json = File.ReadAllText(_logFilePath);

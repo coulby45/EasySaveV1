@@ -30,6 +30,10 @@ namespace EasySaveConsole.Managers
             if (_jobs.Count >= MaxJobs) return false;
             _jobs.Add(job);
             Config.SaveJobs(_jobs);
+
+            // Log l'action d'ajout
+            _logger.LogAdminAction(job.Name, "CREATE", $"Backup job created: {job.Name}");
+
             return true;
         }
 
@@ -39,6 +43,10 @@ namespace EasySaveConsole.Managers
             if (job == null) return false;
             _jobs.Remove(job);
             Config.SaveJobs(_jobs);
+
+            // Log l'action de suppression
+            _logger.LogAdminAction(name, "DELETE", $"Backup job deleted: {name}");
+
             return true;
         }
 
@@ -48,6 +56,10 @@ namespace EasySaveConsole.Managers
             if (idx < 0) return false;
             _jobs[idx] = updated;
             Config.SaveJobs(_jobs);
+
+            // Log l'action de mise à jour
+            _logger.LogAdminAction(updated.Name, "UPDATE", $"Backup job updated: {name} to {updated.Name}");
+
             return true;
         }
 
@@ -63,6 +75,9 @@ namespace EasySaveConsole.Managers
 
         private void RunBackup(Backup job)
         {
+            // Log le début de l'exécution
+            _logger.LogAdminAction(job.Name, "EXECUTE_START", $"Started executing backup job: {job.Name}");
+
             var allFiles = Directory
                 .EnumerateFiles(job.SourcePath, "*", SearchOption.AllDirectories)
                 .ToList();
@@ -139,6 +154,9 @@ namespace EasySaveConsole.Managers
                 File.WriteAllText(_stateFile,
                     JsonSerializer.Serialize(state, new JsonSerializerOptions { WriteIndented = true }));
             }
+
+            // Log la fin de l'exécution
+            _logger.LogAdminAction(job.Name, "EXECUTE_COMPLETE", $"Completed executing backup job: {job.Name}");
         }
 
         public void ShowLogs()

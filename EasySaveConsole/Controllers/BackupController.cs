@@ -31,7 +31,7 @@ namespace EasySaveConsole.Controllers
             while (true)
             {
                 var opt = _view.DisplayMenu(_language);
-                if (opt == "6") break;
+                if (opt == "7") break; // Changed from 6 to 7
                 HandleOption(opt);
             }
         }
@@ -72,6 +72,19 @@ namespace EasySaveConsole.Controllers
                     break;
                 case "5":
                     _manager.ShowLogs();
+                    break;
+                case "6": // Nouvelle option pour exécuter des sauvegardes
+                    _view.DisplayBackupList(_manager.Jobs);
+                    var args = _view.AskBackupIndices(_language);
+                    if (args.Length > 0)
+                    {
+                        foreach (var arg in args)
+                        {
+                            var indices = ParseArgs(arg);
+                            _manager.ExecuteJobsByIndices(indices);
+                        }
+                        _view.ShowMessage("exec_success", _language);
+                    }
                     break;
                 default:
                     _view.ShowMessage("invalid", _language);

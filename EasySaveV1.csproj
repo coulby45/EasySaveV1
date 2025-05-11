@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="EasySaveConsole\EasySave.Console.csproj" />
+    <None Include="EasySaveLogging\EasySave.Logging.csproj" />
+  </ItemGroup>
+
 </Project>
